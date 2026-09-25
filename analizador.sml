@@ -47,30 +47,29 @@ fun leerLibros ruta =
 
 
 (* imprime un libro en pantalla con formato legible *)
-fun imprimirLibro libIndividual =
+fun imprimirLibro (libIndividual: libro) =
   print ("Codigo: " ^ #codigo libIndividual ^
          " | Fecha: " ^ #fecha libIndividual ^
          " | Autor: " ^ #autor libIndividual ^
          " | Genero: " ^ #genero libIndividual ^
          " | Copias: " ^ Int.toString (#copias libIndividual) ^ "\n")
-
-
+         
 (*funciones de rango de copias*)
 
 (* deja solo los libros con copias entre copiasMin y copiasMax *)
-fun enRango copiasMin copiasMax libros =
+fun enRango copiasMin copiasMax (libros: libro list) =
   List.filter (fn lib => #copias lib >= copiasMin andalso #copias lib <= copiasMax) libros
 
 (* ordeno de mayor a menor copias con insertion sort, es el mas facil de entender *)
-fun insertar x [] = [x]
+fun insertar (x: libro) [] = [x]
   | insertar x (y :: ys) =
       if #copias x >= #copias y then x :: y :: ys
       else y :: insertar x ys
 
-fun ordenar libros =
+fun ordenar (libros: libro list) =
   List.foldl (fn (x, acc) => insertar x acc) [] libros
 
-fun opcionA libros =
+fun opcionA (libros: libro list) =
   let
     val _ = print "Copias minimas: "
     val copiasMin = valOf (Int.fromString (leerLinea ()))
@@ -91,7 +90,7 @@ fun contar clave [] = [(clave, 1)]
       if datoActual = clave then (datoActual, n + 1) :: resto
       else (datoActual, n) :: contar clave resto
 
-fun opcionB libros =
+fun opcionB (libros: libro list) =
   let
     val porAutor = List.foldl (fn (libIndividual, acc) => contar (#autor libIndividual) acc) [] libros
     val conCinco = List.filter (fn (autor, n) => n >= 5) porAutor
@@ -102,7 +101,7 @@ fun opcionB libros =
 
 (* funciones de buscar por codigo o autor *)
 
-fun opcionC libros =
+fun opcionC (libros: libro list) =
   let
     val _ = print "Codigo o autor a buscar: "
     val texto = leerLinea ()
@@ -115,7 +114,7 @@ fun opcionC libros =
 
 (*funcionws de consultar la cantidad de libros por genero *)
 
-fun opcionD libros =
+fun opcionD (libros: libro list) =
   let
     val _ = print "Genero a consultar: "
     val genero = leerLinea ()
@@ -135,7 +134,7 @@ fun masAlto [] = ("", 0)
       let val (clave2, n2) = masAlto resto
       in if n >= n2 then (clave, n) else (clave2, n2) end
 
-fun opcionE libros =
+fun opcionE (libros: libro list) =
   let
     val porGenero = List.foldl (fn (libIndividual, acc) => contar (#genero libIndividual) acc) [] libros
     val porAutor  = List.foldl (fn (libIndividual, acc) => contar (#autor libIndividual) acc) [] libros
